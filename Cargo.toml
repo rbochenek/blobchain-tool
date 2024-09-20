@@ -1,0 +1,18 @@
+[package]
+name = "blobchain-tool"
+version = "0.1.0"
+edition = "2021"
+authors = ["Radek Bochenek"]
+repository = "https://github.com/rbochenek/blobchain-tool"
+license = "Unlicense"
+license-file = "LICENSE"
+
+[dependencies]
+anyhow = "1.0.89"
+clap = { version = "4.5.17", features = ["derive"] }
+env_logger = "0.11.5"
+hex = "0.4.3"
+log = "0.4.22"
+subxt = "0.37.0"
+subxt-signer = "0.37.0"
+tokio = { version = "1.40.0", features = ["full"] }
