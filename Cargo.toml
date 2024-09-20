@@ -5,7 +5,6 @@ edition = "2021"
 authors = ["Radek Bochenek"]
 repository = "https://github.com/rbochenek/blobchain-tool"
 license = "Unlicense"
-license-file = "LICENSE"
 
 [dependencies]
 anyhow = "1.0.89"
