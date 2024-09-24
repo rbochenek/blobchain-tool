@@ -66,11 +66,17 @@ async fn main() -> Result<()> {
 
                 for ev_blobstored in events.find::<substrate::blob_manager::events::BlobStored>() {
                     let event = ev_blobstored?;
-                    log::info!(
-                        "Event BlobStored: block_number: {} bytes: {}",
-                        event.block_number,
-                        event.bytes
-                    );
+                    log::info!("Event BlobStored");
+                }
+
+                for event in events.iter() {
+                    let event = event?;
+
+                    let pallet = event.pallet_name();
+                    let variant = event.variant_name();
+                    let field_values = event.field_values()?;
+
+                    log::debug!("Event {pallet}::{variant}: {field_values}");
                 }
             }
         }
