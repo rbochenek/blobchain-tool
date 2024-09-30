@@ -28,8 +28,6 @@ enum Commands {
     Monitor,
     /// View Blobmanager state
     Show,
-    /// Set uploader
-    SetUploader,
 }
 
 #[tokio::main]
@@ -43,8 +41,7 @@ async fn main() -> Result<()> {
     // Parse clap arguments
     let cli = Cli::parse();
 
-    // Hard-coded accounts
-    let admin_keypair: Keypair = dev::alice();
+    // Hard-coded account
     let uploader_keypair: Keypair = dev::bob();
 
     // Connect to node
@@ -81,20 +78,6 @@ async fn main() -> Result<()> {
             }
         }
         Commands::Show => {
-            // Admin
-            let admin_query = substrate::storage().blob_manager().admin();
-            let result = client
-                .storage()
-                .at_latest()
-                .await?
-                .fetch(&admin_query)
-                .await?;
-            if let Some(admin) = result {
-                log::info!("Admin: {}", admin.to_string());
-            } else {
-                log::warn!("Admin not set");
-            }
-
             // Uploader
             let uploader_query = substrate::storage().blob_manager().uploader();
             let result = client
@@ -132,45 +115,11 @@ async fn main() -> Result<()> {
                 .await?;
             log::info!("StorageVersion: {storage_version}");
         }
-        Commands::SetUploader => {
-            log::info!(
-                "Sending extrinsic to change BlobManager uploader to account address {}",
-                uploader_keypair.public_key().to_account_id().to_string()
-            );
-            blobmanager_set_uploader(
-                &client,
-                admin_keypair,
-                uploader_keypair.public_key().to_account_id(),
-            )
-            .await?;
-        }
     }
 
     Ok(())
 }
 
-/// Set blobmanager's Uploader
-async fn blobmanager_set_uploader<T, U>(
-    client: &OnlineClient<T>,
-    signer: U,
-    uploader: AccountId,
-) -> Result<()>
-where
-    T: Config,
-    <<T as Config>::ExtrinsicParams as subxt::config::ExtrinsicParams<T>>::Params:
-        std::default::Default,
-    U: Signer<T>,
-{
-    let tx_payload = substrate::tx().blob_manager().set_uploader(uploader);
-    let events = client
-        .tx()
-        .sign_and_submit_then_watch_default(&tx_payload, &signer)
-        .await?
-        .wait_for_finalized_success()
-        .await?;
-
-    Ok(())
-}
 /// Get blobs for a given block number
 fn get_blobs_for_blocknumber(block_number: u32) -> Result<Vec<Vec<u8>>> {
     let output = vec![];
