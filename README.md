@@ -1,4 +1,4 @@
-# ⛓️‍💥 blobchain-tool
+# 🔗 blobchain-tool
 
 ### About
 A simple CLI tool for [blobchain](https://github.com/rbochenek/blobchain).
